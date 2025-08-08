@@ -1,0 +1,2 @@
+@keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-10px)}to{transform:translateY(0)}}.funky-float{animation:float 3s ease-in-out infinite}.gradient-text{background:linear-gradient(45deg,#fe6b8b 30%,#ff8e53 90%);-webkit-background-clip:text;background-clip:text;color:#0000}@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}to{transform:scale(1)}}.pulse:hover{animation:pulse 1s infinite}
+/*# sourceMappingURL=main.8b451c61.css.map*/
