@@ -155,7 +155,7 @@ function App() {
         }}
       >
         <Typography variant="h3" color="white" fontWeight="bold">
-          Funky CRUD App 🎉
+          Funky CRUD  🎉
         </Typography>
       </Box>
 
