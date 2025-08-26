@@ -18,7 +18,7 @@ services:
       - app-network
 
   backend:
-    image: abhu1234/backend:latest
+    image: abhu1234/back:latest
     ports:
       - "5000:5000"
     environment:
@@ -37,7 +37,7 @@ services:
       - app-network
 
   frontend:
-    image: abhu1234/frontend:latest
+    image: abhu1234/front:latest
     ports:
       - "3100:80"  # Changed from 80 to match React default
     environment:
