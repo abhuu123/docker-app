@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // Store in Jenkins
+        DOCKER_USER = 'abhu1234'
+        FRONT_IMAGE = 'abhu1234/front:latest'
+        BACK_IMAGE  = 'abhu1234/back:latest'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                echo '📥 Cloning repository...'
+                git url: "https://github.com/abhuu123/docker-app.git", branch: "main"
+                echo '✅ Code clone successful'
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                echo '⚙️ Building Docker images...'
+                sh 'docker build -t $BACK_IMAGE ./backend'
+                sh 'docker build -t $FRONT_IMAGE ./frontend'
+                echo '✅ Docker images built successfully'
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                echo '📤 Pushing images to DockerHub...'
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                sh 'docker push $FRONT_IMAGE'
+                sh 'docker push $BACK_IMAGE'
+                echo '✅ Images pushed to DockerHub successfully'
+            }
+        }
+
+        stage('Deploy with Docker Compose') {
+            steps {
+                echo '🚀 Deploying application using Docker Compose...'
+                sh 'docker-compose down || true'   // stop old containers
+                sh 'docker-compose up -d'
+                echo '✅ Application deployed successfully'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "🎉 Pipeline executed successfully!"
+        }
+        failure {
+            echo "❌ Pipeline failed. Check logs!"
+        }
+    }
+}
