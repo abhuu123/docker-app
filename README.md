@@ -88,13 +88,8 @@ Build & push images
 
 Deploy containers
 
-📸 Pipeline Flow Diagram
-flowchart TD
-    A[GitHub Commit] --> B[Jenkins: Code Stage]
-    B --> C[Build Docker Images]
-    C --> D[Push to DockerHub]
-    D --> E[Deploy with Docker Compose]
-    E --> F[Running Containers]
+<img width="6541" height="598" alt="deepseek_mermaid_20250828_d2a836" src="https://github.com/user-attachments/assets/cab2a18f-61b3-4a36-b20e-0fd2bb45ce1e" />
+
 
 
 🔥 With this setup, every code change triggers an automated build → push → deploy pipeline.
