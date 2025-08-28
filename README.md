@@ -1,124 +1,100 @@
-🚀 Dockerized Application CI/CD Pipeline
-Overview
-This project implements a complete Continuous Integration and Continuous Deployment (CI/CD) pipeline for a containerized application. The solution automates the entire software delivery process from code commit to production deployment using Jenkins, Docker, and Docker Compose.
+🚀 CI/CD Pipeline for Dockerized Application
 
-Architecture Components
-Jenkins: Automation server orchestrating the CI/CD pipeline
+This project demonstrates a complete CI/CD pipeline using Jenkins, GitHub, and Docker.
+It automates the process of cloning code, building Docker images, pushing them to DockerHub, and deploying with Docker Compose.
+----
+📌 Pipeline Workflow
 
-Docker: Containerization platform for application packaging
+The Jenkins pipeline (Jenkinsfile) defines the following stages:
 
-Docker Hub: Container registry for image storage and distribution
+1️⃣ Code (Clone Repository)
 
-Docker Compose: Tool for defining and running multi-container applications
+Pulls the latest code from the GitHub repository.
 
-GitHub: Version control system hosting the application codebase
+Ensures we always work with the most recent version of the project.
 
-Pipeline Workflow
-1. Code Acquisition Stage
-groovy
 stage('code') {
     steps {
-        echo 'Cloning source code from repository'
-        git url: "https://github.com/abhuu123/docker-app.git", branch: "main"
-        echo "Code repository successfully cloned"
+        echo 'Cloning code'
+        git url:"https://github.com/abhuu123/docker-app.git", branch:"main"
+        echo "Code clone successful"
     }
 }
-Retrieves the most recent code version from the main branch
 
-Ensures subsequent stages operate on current codebase
+2️⃣ Build (Docker Images)
 
-2. Image Construction Stage
-groovy
+Builds frontend and backend Docker images.
+
+Tags them with latest for easy deployment.
+
 stage('build') {
     steps {
         sh 'docker build -t abhu1234/back:latest ./backend'
         sh 'docker build -t abhu1234/front:latest ./frontend'
     }
 }
-Constructs Docker images for both frontend and backend components
 
-Applies the 'latest' tag to identify the most recent build
+3️⃣ Push (DockerHub)
 
-3. Image Publication Stage
-groovy
+Logs in to DockerHub.
+
+Pushes both images to the DockerHub registry.
+
 stage('push') {
     steps {
-        withCredentials([usernamePassword(credentialsId: 'docker-hub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-            sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
-            sh 'docker push abhu1234/front:latest'
-            sh 'docker push abhu1234/back:latest'
-        }
+        sh 'docker login -u abhu1234 -p <your-password>'
+        sh 'docker push abhu1234/front:latest'
+        sh 'docker push abhu1234/back:latest'
     }
 }
-Securely authenticates with Docker Hub using credential management
 
-Publishes both container images to the registry
+4️⃣ Deploy (Docker Compose)
 
-4. Deployment Stage
-groovy
+Stops running containers (if any).
+
+Deploys updated containers using docker-compose.
+
 stage('deploy') {
     steps {
-        sh 'docker-compose down --remove-orphans || true'
-        sh 'docker-compose up -d --build'
+        sh 'docker-compose down || true'
+        sh 'docker-compose up -d'
     }
 }
-Gracefully terminates existing containers
 
-Deploys updated containers using Docker Compose
+⚙️ Tech Stack
 
-Implementation Requirements
-Prerequisites
-Jenkins server with Docker and Docker Compose plugins
+Jenkins – Automation server for CI/CD
 
-Docker Hub account with repository creation privileges
+Docker – Containerization
 
-GitHub repository containing application code
+DockerHub – Image registry
 
-Docker and Docker Compose installed on deployment target
+Docker Compose – Multi-container orchestration
 
-Security Considerations
-Utilize Jenkins credential management for sensitive information
+GitHub – Code repository
 
-Implement proper network segmentation between components
+🔑 How to Run
 
-Regularly update all system components to address security vulnerabilities
+Clone this repository:
 
-Execution Process
-Clone the application repository:
-
-bash
 git clone https://github.com/abhuu123/docker-app.git
-Configure Jenkins pipeline to monitor the repository
 
-Execute the pipeline to initiate automated:
 
-Image construction and validation
+Configure Jenkins with this repository.
 
-Container publication to registry
+Run the pipeline to:
 
-Application deployment to target environment
+Build & push images
 
-Pipeline Visualization
-text
-GitHub Commit → Jenkins Code Retrieval → Docker Image Construction → 
-Image Publication to Docker Hub → Docker Compose Deployment → 
-Running Application Containers
-Benefits
-Automated Deployment: Eliminates manual intervention in the deployment process
+Deploy containers
 
-Consistent Environments: Ensures identical environments across development, testing, and production
+📸 Pipeline Flow Diagram
+flowchart TD
+    A[GitHub Commit] --> B[Jenkins: Code Stage]
+    B --> C[Build Docker Images]
+    C --> D[Push to DockerHub]
+    D --> E[Deploy with Docker Compose]
+    E --> F[Running Containers]
 
-Rapid Iteration: Enables frequent and reliable software releases
 
-Version Control: Maintains precise versioning of all containerized components
-
-Maintenance Considerations
-Regularly review and update base images for security patches
-
-Monitor pipeline execution logs for process improvements
-
-Implement rollback procedures for failed deployments
-
-Establish comprehensive monitoring for deployed containers
-
-This implementation represents a robust foundation for containerized application delivery that can be extended with additional stages for testing, security scanning, and environment-specific configurations.
+🔥 With this setup, every code change triggers an automated build → push → deploy pipeline.
